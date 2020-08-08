@@ -1,0 +1,49 @@
+/*------------------------------------*\
+    TYPOGRAPHY
+\*------------------------------------*/
+
+/* html5 font face */
+
+body
+{
+    background: rgb(240, 240, 240);
+    background-color: rgb(240, 240, 240);
+}
+
+.reveal a
+{
+    font-family: 'arial';
+    color: rgb(36, 41, 46);
+}
+
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4,
+.reveal h5,
+.reveal h6
+{
+    font-family: 'arial';
+    color: rgb(36, 41, 46);
+}
+
+.reveal p,
+.reveal li,
+.reveal ul,
+.reveal ol
+{
+    font-family: 'arial';
+    color: rgb(36, 41, 46);
+}
+
+.reveal em
+{
+    font-family: 'arial';
+    color: rgb(36, 41, 46);
+}
+
+.reveal strong
+{
+    font-family: 'arial';
+    color: rgb(36, 41, 46);
+}
