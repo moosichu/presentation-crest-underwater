@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
   <meta name="author" content="Tom Read Cutting">
-  <title>How Information Works</title>
+  <title>Rendering Underwater in Crest Ocean Renderer</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -37,33 +37,91 @@
     <div class="slides">
 
 
-<section id="rendering-underwater" class="slide level3">
-<h3>Rendering Underwater</h3>
+<section id="rendering-underwater-in-crest-ocean-renderer" class="slide level3">
+<h3>Rendering Underwater in Crest Ocean Renderer</h3>
 </section>
-<section id="presentation" class="slide level3">
-<h3>Presentation</h3>
-<p>Some Text</p>
-<div class="fragment">
-<ol type="1">
-<li>Some More Text</li>
-</ol>
-</div>
-<div class="fragment">
-<ol start="2" type="1">
-<li>Even more text</li>
-</ol>
+<section id="what-is-crest" class="slide level3">
+<h3>What is Crest?</h3>
+<p>TODO: Add some good screenshots!</p>
 <aside class="notes">
-<p>My Notes</p>
-</aside>
-</div>
-</section>
-<section id="why-do" class="slide level3">
-<h3>Why Do?</h3>
-<p>OK - I know how this works now</p>
-<aside class="notes">
-<p>And I can add notes!</p>
+<p>Crest is an Ocean Rendering system written for the Unity game engine. There is an open-source implementation available for Unity’s built-in render pipeline - in addition to URP and HDRP version of the asset available on Unity’s asset store.</p>
 </aside>
 </section>
+<section>
+<section id="the-problem" class="title-slide slide level2">
+<h2>The Problem</h2>
+
+</section>
+<section id="why-do-you-need-underwater-rendering" class="slide level3">
+<h3>Why do you need “Underwater Rendering”?</h3>
+<p>Simple Problem: Being Underwater “looks” different to being above water.</p>
+<aside class="notes">
+<p>TODO: Show real-life image of how underwater looks different to being above water - and the complex features you have.</p>
+</aside>
+</section>
+<section id="transitioning-between-above-and-below-water" class="slide level3">
+<h3>Transitioning Between “Above” and “Below” Water</h3>
+<p>Most common solution: cut between views.</p>
+<div class="fragment">
+<p>Crest users expect this to “just work”.</p>
+<aside class="notes">
+<p>Not all Crest users have the resources available to implement the camera logic necessary to cut between “above” and “below” water views. It’s an art to be able to pull that off in an AAA game.</p>
+<p>TODO: Game examples: Shadow of the collus, call of duty, uncharted. Counter: Nautica?</p>
+</aside>
+</div>
+</section></section>
+<section>
+<section id="solution-1-the-skirt" class="title-slide slide level2">
+<h2>Solution 1: The Skirt</h2>
+
+</section>
+<section id="what-is-a-skirt" class="slide level3">
+<h3>What is a Skirt?</h3>
+<ul>
+<li>Current solution in <code>master</code> branch of Crest - used in URP release as well.</li>
+</ul>
+</section>
+<section id="the-idea" class="slide level3">
+<h3>The Idea</h3>
+<aside class="notes">
+<p>TODO: reference Uncharted 3 paper, implemented by huw etc.</p>
+</aside>
+</section>
+<section id="the-implementation" class="slide level3">
+<h3>The Implementation</h3>
+<aside class="notes">
+<p>TODO: writeup</p>
+</aside>
+</section>
+<section id="the-problems" class="slide level3">
+<h3>The Problems</h3>
+<ul>
+<li>Not Perfect!</li>
+<li>Assumes single-divide between “above” and “below” - top-down handled poorly.</li>
+<li>Handling VR is hard!</li>
+<li>Code can be hard to follow!</li>
+</ul>
+<aside class="notes">
+<p>TODO</p>
+</aside>
+</section></section>
+<section>
+<section id="solution-2-post-process-effect" class="title-slide slide level2">
+<h2>Solution 2: Post Process Effect</h2>
+
+</section>
+<section id="idea" class="slide level3">
+<h3>Idea</h3>
+<p>“Simpler” and “More Robust” solution.</p>
+<div class="fragment">
+<p>PR has been open since 20th of July… 2019!</p>
+</div>
+</section>
+<section id="still-worthwhile" class="slide level3">
+<h3>Still worthwhile?</h3>
+<p>Yes!</p>
+<p>TODO: Continue presentation outline.</p>
+</section></section>
 <section>
 <section id="the-end" class="title-slide slide level2">
 <h2>The End</h2>
