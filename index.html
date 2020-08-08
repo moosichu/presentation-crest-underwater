@@ -17,6 +17,68 @@
     div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="reveal.js/css/theme/black.css" id="theme">
   <link rel="stylesheet" href="css/style.css"/>
@@ -48,9 +110,13 @@
 </aside>
 </section>
 <section>
-<section id="the-problem" class="title-slide slide level2">
-<h2>The Problem</h2>
-
+<section id="the-problems" class="title-slide slide level2">
+<h2>The Problems</h2>
+<ul>
+<li>What effects should be applied? And how?</li>
+<li>When to apply effects?</li>
+<li>How to handle transition between effects!</li>
+</ul>
 </section>
 <section id="why-do-you-need-underwater-rendering" class="slide level3">
 <h3>Why do you need “Underwater Rendering”?</h3>
@@ -58,9 +124,33 @@
 <aside class="notes">
 <p>TODO: Show real-life image of how underwater looks different to being above water - and the complex features you have.</p>
 </aside>
+</section></section>
+<section>
+<section id="how-effects-are-applied" class="title-slide slide level2">
+<h2>How effects are applied</h2>
+
 </section>
-<section id="transitioning-between-above-and-below-water" class="slide level3">
-<h3>Transitioning Between “Above” and “Below” Water</h3>
+<section id="rendering-water-surface" class="slide level3">
+<h3>Rendering Water Surface</h3>
+<p>Branch shader when rendering back-faces</p>
+<div class="fragment">
+<ul>
+<li>Branching in shader :(</li>
+<li>Handles transition!</li>
+<li>Single draw-calls</li>
+<li>Simple to implement!</li>
+</ul>
+</div>
+</section>
+<section id="fog" class="slide level3">
+<h3>Fog</h3>
+<p>Apply fog when underwater.</p>
+<div class="fragment">
+<p>Light penetration - darken screen as depth increases.</p>
+</div>
+</section></section>
+<section id="transitioning-between-above-and-below-water" class="title-slide slide level2">
+<h2>Transitioning Between “Above” and “Below” Water</h2>
 <p>Most common solution: cut between views.</p>
 <div class="fragment">
 <p>Crest users expect this to “just work”.</p>
@@ -69,7 +159,8 @@
 <p>TODO: Game examples: Shadow of the collus, call of duty, uncharted. Counter: Nautica?</p>
 </aside>
 </div>
-</section></section>
+</section>
+
 <section>
 <section id="solution-1-the-skirt" class="title-slide slide level2">
 <h2>Solution 1: The Skirt</h2>
@@ -93,13 +184,15 @@
 <p>TODO: writeup</p>
 </aside>
 </section>
-<section id="the-problems" class="slide level3">
+<section id="the-problems-1" class="slide level3">
 <h3>The Problems</h3>
 <ul>
 <li>Not Perfect!</li>
 <li>Assumes single-divide between “above” and “below” - top-down handled poorly.</li>
 <li>Handling VR is hard!</li>
 <li>Code can be hard to follow!</li>
+<li>Ocean surface shader re-applies fog!</li>
+<li>Hard to manage across BIRP, URP &amp; HDRP</li>
 </ul>
 <aside class="notes">
 <p>TODO</p>
@@ -116,12 +209,81 @@
 <div class="fragment">
 <p>PR has been open since 20th of July… 2019!</p>
 </div>
+<div class="fragment">
+<p>185 commits, 44 files changed, ~1200 LOC</p>
+</div>
+<div class="fragment">
+<p>More LOC deleted than added!</p>
+</div>
 </section>
 <section id="still-worthwhile" class="slide level3">
 <h3>Still worthwhile?</h3>
 <p>Yes!</p>
-<p>TODO: Continue presentation outline.</p>
+</section>
+<section id="the-challenge" class="slide level3">
+<h3>The Challenge</h3>
+<p>Which pixels are “Underwater”?</p>
+</section>
+<section id="the-query" class="slide level3">
+<h3>The Query</h3>
+<p>Is the pixel above or below the water surface?</p>
+</section>
+<section id="the-solution" class="slide level3">
+<h3>The solution?</h3>
+<p>Hard Problem: not a lot of games solve it!</p>
+<p>Could not find <em>any</em> published material on this topic…</p>
+<p>But <em>some</em> games do this. Same technique re-invented multiple times?</p>
+</section>
+<section id="the-solution-cont." class="slide level3">
+<h3>The solution? (Cont.)</h3>
+<p>Assume water “horizon” intersects far-plane of camera-frustum at fixed world-space height.</p>
+<div class="fragment">
+<p>True for Crest as we have a skirt</p>
+</div>
+<div class="fragment">
+<p>TODO: Show Screenshot!</p>
+</div>
+</section>
+<section id="the-mask" class="slide level3">
+<h3>The Mask</h3>
+<p>Re-render water to mask-buffer, sample in PP shader.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode glsl"><code class="sourceCode glsl"><span id="cb1-1"><a href="#cb1-1"></a></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="dt">bool</span> isUnderwater = mask == UNDERWATER_MASK_WATER_SURFACE_BELOW || (isBelowHorizon &amp;&amp; mask != UNDERWATER_MASK_WATER_SURFACE_ABOVE);</span></code></pre></div>
+<p>Mask can also be used to avoid rendering caustics on water surface.</p>
+<div class="fragment">
+<p>If custom engine… could use stencil buffer.</p>
+</div>
+</section>
+<section id="works-well-but" class="slide level3">
+<h3>Works well but…</h3>
+<p>Weird artifacting :(</p>
+<p>TODO:Show screenshot of horizon issue…</p>
+</section>
+<section id="look-at-implementation" class="slide level3">
+<h3>Look at implementation</h3>
+<p>TODO: Show how code changed over time…</p>
+<p>TODO: Show solutions that developed…</p>
+<p>TODO: Show that still not perfect… - but close!</p>
 </section></section>
+<section>
+<section id="other-concerns" class="title-slide slide level2">
+<h2>Other concerns</h2>
+
+</section>
+<section id="supporting-local-water-bodies" class="slide level3">
+<h3>Supporting local water bodies!</h3>
+<p>Have to be careful about constructing list of ocean tiles to render to the mask!</p>
+<p>TODO: Show code</p>
+</section></section>
+<section id="future-work" class="title-slide slide level2">
+<h2>Future Work</h2>
+<ul>
+<li>Volumetric Effects - Particles, Fog</li>
+<li>Using the stencil buffer?</li>
+<li>Transparency Windows (TODO: Get Screenshots)</li>
+</ul>
+</section>
+
 <section>
 <section id="the-end" class="title-slide slide level2">
 <h2>The End</h2>
