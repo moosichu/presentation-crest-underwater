@@ -254,6 +254,10 @@ Yes!
 
 Which pixels are "Underwater"?
 
+. . .
+
+If solved - everything "just works".
+
 ---
 
 ### The Query
@@ -278,11 +282,11 @@ Assume water "horizon" intersects far-plane of camera-frustum at fixed world-spa
 
 . . .
 
-True for Crest as we have a skirt
+True for Crest as we extend-out way-beyond camera frustum!
 
-. . .
+---
 
-TODO: Show Screenshot!
+### {data-background-image="img/camera_intersect_horizon.jpg" data-background-size=contain}
 
 ---
 
@@ -301,6 +305,22 @@ Mask can also be used to avoid rendering caustics on water surface.
 . . .
 
 If custom engine... could use stencil buffer.
+
+---
+
+### {data-background-image="img/mark_horizon_flat_ocean.jpg" data-background-size=contain}
+
+---
+
+### {data-background-image="img/mark_horizon_location.jpg" data-background-size=contain}
+
+---
+
+### {data-background-image="img/mark_ocean_mask.jpg" data-background-size=contain}
+
+---
+
+### {data-background-image="img/mark_final_result.jpg" data-background-size=contain}
 
 ---
 

@@ -240,6 +240,7 @@
 <li>Code can be hard to follow!</li>
 <li>Ocean surface shader re-applies fog!</li>
 <li>Hard to manage across BIRP, URP &amp; HDRP</li>
+<li>Shader params have to match <em>perfectly</em></li>
 </ul>
 <aside class="notes">
 <p>TODO</p>
@@ -276,6 +277,9 @@
 <section id="the-challenge" class="slide level3">
 <h3>The Challenge</h3>
 <p>Which pixels are “Underwater”?</p>
+<div class="fragment">
+<p>If solved - everything “just works”.</p>
+</div>
 </section>
 <section id="the-query" class="slide level3">
 <h3>The Query</h3>
@@ -291,11 +295,11 @@
 <h3>The solution? (Cont.)</h3>
 <p>Assume water “horizon” intersects far-plane of camera-frustum at fixed world-space height.</p>
 <div class="fragment">
-<p>True for Crest as we have a skirt</p>
+<p>True for Crest as we extend-out way-beyond camera frustum!</p>
 </div>
-<div class="fragment">
-<p>TODO: Show Screenshot!</p>
-</div>
+</section>
+<section id="section-13" class="slide level3" data-background-image="img/camera_intersect_horizon.jpg" data-background-size="contain">
+<h3 data-background-image="img/camera_intersect_horizon.jpg" data-background-size="contain"></h3>
 </section>
 <section id="the-mask" class="slide level3">
 <h3>The Mask</h3>
@@ -306,6 +310,18 @@
 <div class="fragment">
 <p>If custom engine… could use stencil buffer.</p>
 </div>
+</section>
+<section id="section-14" class="slide level3" data-background-image="img/mark_horizon_flat_ocean.jpg" data-background-size="contain">
+<h3 data-background-image="img/mark_horizon_flat_ocean.jpg" data-background-size="contain"></h3>
+</section>
+<section id="section-15" class="slide level3" data-background-image="img/mark_horizon_location.jpg" data-background-size="contain">
+<h3 data-background-image="img/mark_horizon_location.jpg" data-background-size="contain"></h3>
+</section>
+<section id="section-16" class="slide level3" data-background-image="img/mark_ocean_mask.jpg" data-background-size="contain">
+<h3 data-background-image="img/mark_ocean_mask.jpg" data-background-size="contain"></h3>
+</section>
+<section id="section-17" class="slide level3" data-background-image="img/mark_final_result.jpg" data-background-size="contain">
+<h3 data-background-image="img/mark_final_result.jpg" data-background-size="contain"></h3>
 </section>
 <section id="works-well-but" class="slide level3">
 <h3>Works well but…</h3>
