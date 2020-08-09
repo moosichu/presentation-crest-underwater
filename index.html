@@ -323,36 +323,113 @@
 <section id="section-17" class="slide level3" data-background-image="img/mark_final_result.jpg" data-background-size="contain">
 <h3 data-background-image="img/mark_final_result.jpg" data-background-size="contain"></h3>
 </section>
-<section id="works-well-but" class="slide level3">
-<h3>Works well but…</h3>
-<p>Weird artifacting :(</p>
-<p>TODO:Show screenshot of horizon issue…</p>
+<section class="slide level3">
+
+</section></section>
+<section>
+<section id="post-process---the-correct-solution" class="title-slide slide level2">
+<h2>Post-Process - The Correct Solution?</h2>
+<p>Works Well! But…</p>
 </section>
-<section id="look-at-implementation" class="slide level3">
-<h3>Look at implementation</h3>
-<p>TODO: Show how code changed over time…</p>
-<p>TODO: Show solutions that developed…</p>
-<p>TODO: Show that still not perfect… - but close!</p>
+<section id="weird-artifacting" class="slide level3">
+<h3>Weird artifacting :(</h3>
+</section>
+<section id="section-18" class="slide level3" data-background-image="img/horizon_line_issue.jpg" data-background-size="contain">
+<h3 data-background-image="img/horizon_line_issue.jpg" data-background-size="contain"></h3>
+</section>
+<section id="the-horizon-line-issue" class="slide level3">
+<h3>The “Horizon-Line” Issue</h3>
+<ul>
+<li>Really hard to repro - happens for a single-frame as camera is moving.</li>
+<li>Camera has to be at specific angles &amp; positions to trigger it.</li>
+<li>Different sensitivity on different hardware.</li>
+</ul>
+<div class="fragment">
+<ul>
+<li>Each time we “solved” it - we had just made the repro case harder. :(</li>
+</ul>
+</div>
+</section>
+<section id="the-cause" class="slide level3">
+<h3>The Cause?</h3>
+<p>Floating-point precision issues :/</p>
+<div class="fragment">
+<p>Cannot “just-use” doubles in shader.</p>
+</div>
+<div class="fragment">
+<p>Probably for the best…</p>
+</div>
+</section>
+<section id="implementation-1---vertex-shader" class="slide level3">
+<h3>Implementation 1 - Vertex Shader</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode glsl"><code class="sourceCode glsl"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>float2 pixelCS = input.<span class="fu">uv</span> * <span class="dv">2</span> - <span class="fu">float2</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>);</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>float4 pixelWS =</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>  <span class="fu">mul</span>(_InvViewProjection, <span class="fu">float4</span>(pixelCS, <span class="fl">1.0</span>, <span class="fl">1.0</span>));</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a>output.<span class="fu">viewWS_farPlanePixelHeight</span> =</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a>  (pixelWS.<span class="fu">xyzy</span>/pixelWS.<span class="fu">w</span>);</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a>output.<span class="fu">viewWS_farPlanePixelHeight</span>.<span class="fu">xyz</span> =</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a>  _WorldSpaceCameraPos -</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true"></a>  output.<span class="fu">viewWS_farPlanePixelHeight</span>.<span class="fu">xyz</span>;</span></code></pre></div>
+<p>Check <code>pixelHeight</code> is less than ocean height in pixel shader…</p>
+</section>
+<section id="implementation-2---cpu-ocean-height" class="slide level3">
+<h3>Implementation 2 - CPU Ocean Height?</h3>
+<p>TODO: Show Code</p>
+<p>https://github.com/crest-ocean/crest/pull/299/commits/48872a990e48feb7c2e944f435b10a6bd3642343</p>
+</section>
+<section id="implementation-3---move-calculation-to-pixel-shader" class="slide level3">
+<h3>Implementation 3 - Move Calculation to Pixel Shader</h3>
+<p>TODO: Show Code</p>
+<p>https://github.com/crest-ocean/crest/pull/299/commits/cb4b9ce6948b19f37201069dd2416037253eb720</p>
+<p>Stayed here for a while</p>
+</section>
+<section id="implementation-4---do-everything-on-cpu" class="slide level3">
+<h3>Implementation 4 - Do <em>everything</em> on CPU</h3>
+</section>
+<section id="implementation-5---horizon-line-fudge" class="slide level3">
+<h3>Implementation 5 - Horizon-Line Fudge</h3>
+<p>Dirty Hack!</p>
+<p>Nudge horizon line up if below water, down if above water.</p>
+<div class="fragment">
+<p>Assumption - camera at water-level, mask more likely to cover horizon.</p>
+</div>
 </section></section>
 <section>
 <section id="other-concerns" class="title-slide slide level2">
-<h2>Other concerns</h2>
+<h2>Other Concerns!</h2>
 
 </section>
 <section id="supporting-local-water-bodies" class="slide level3">
 <h3>Supporting local water bodies!</h3>
 <p>Have to be careful about constructing list of ocean tiles to render to the mask!</p>
-<p>TODO: Show code</p>
+<div class="fragment">
+<p>Always render “culled” tiles in post-process mask. Solved other problems as well!</p>
+</div>
+</section>
+<section id="vr" class="slide level3">
+<h3>VR</h3>
+<p>Have to support multi-pass, single-pass and single-pass instanced…</p>
+<p>A bit easier in post-process shader, but mask needs to be instanced.</p>
+</section>
+<section id="unity-bugs" class="slide level3">
+<h3>Unity Bugs</h3>
+<p>Doesn’t work with Post-Process stack in BIRP…</p>
 </section></section>
+<section>
 <section id="future-work" class="title-slide slide level2">
 <h2>Future Work</h2>
 <ul>
-<li>Volumetric Effects - Particles, Fog</li>
+<li>Volumetric Effects - Particles, Fog, Crepuscular Rays</li>
 <li>Using the stencil buffer?</li>
-<li>Transparency Windows (TODO: Get Screenshots)</li>
+<li>Transparency Windows!</li>
 </ul>
 </section>
-
+<section id="section-19" class="slide level3" data-background-image="img/window_inside_out.jpg" data-background-size="contain">
+<h3 data-background-image="img/window_inside_out.jpg" data-background-size="contain"></h3>
+</section>
+<section id="section-20" class="slide level3" data-background-image="img/window_outside_in.jpg" data-background-size="contain">
+<h3 data-background-image="img/window_outside_in.jpg" data-background-size="contain"></h3>
+</section></section>
 <section>
 <section id="the-end" class="title-slide slide level2">
 <h2>The End</h2>

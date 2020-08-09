@@ -322,25 +322,98 @@ If custom engine... could use stencil buffer.
 
 ### {data-background-image="img/mark_final_result.jpg" data-background-size=contain}
 
----
 
-### Works well but...
 
-Weird artifacting :(
+## Post-Process - The Correct Solution?
 
-TODO:Show screenshot of horizon issue...
+Works Well! But...
 
 ---
 
-### Look at implementation
+### Weird artifacting :(
 
-TODO: Show how code changed over time...
+---
 
-TODO: Show solutions that developed...
+### {data-background-image="img/horizon_line_issue.jpg" data-background-size=contain}
 
-TODO: Show that still not perfect... - but close!
+---
 
-## Other concerns
+### The "Horizon-Line" Issue
+
+- Really hard to repro - happens for a single-frame as camera is moving.
+- Camera has to be at specific angles & positions to trigger it.
+- Different sensitivity on different hardware.
+
+. . .
+
+- Each time we "solved" it - we had just made the repro case harder. :(
+
+---
+
+### The Cause?
+
+Floating-point precision issues :/
+
+. . .
+
+Cannot "just-use" doubles in shader.
+
+. . .
+
+Probably for the best...
+
+---
+
+### Implementation 1 - Vertex Shader
+
+```glsl
+float2 pixelCS = input.uv * 2 - float2(1.0, 1.0);
+float4 pixelWS =
+  mul(_InvViewProjection, float4(pixelCS, 1.0, 1.0));
+output.viewWS_farPlanePixelHeight =
+  (pixelWS.xyzy/pixelWS.w);
+output.viewWS_farPlanePixelHeight.xyz =
+  _WorldSpaceCameraPos -
+  output.viewWS_farPlanePixelHeight.xyz;
+```
+
+Check `pixelHeight` is less than ocean height in pixel shader...
+
+---
+
+### Implementation 2 - CPU Ocean Height?
+
+TODO: Show Code
+
+https://github.com/crest-ocean/crest/pull/299/commits/48872a990e48feb7c2e944f435b10a6bd3642343
+
+---
+
+### Implementation 3 - Move Calculation to Pixel Shader
+
+TODO: Show Code
+
+https://github.com/crest-ocean/crest/pull/299/commits/cb4b9ce6948b19f37201069dd2416037253eb720
+
+Stayed here for a while
+
+---
+
+### Implementation 4 - Do *everything* on CPU
+
+---
+
+### Implementation 5 - Horizon-Line Fudge
+
+Dirty Hack!
+
+Nudge horizon line up if below water, down if above water.
+
+. . .
+
+Assumption - camera at water-level, mask more likely to cover horizon.
+
+## Other Concerns!
 
 ---
 
@@ -348,13 +421,38 @@ TODO: Show that still not perfect... - but close!
 
 Have to be careful about constructing list of ocean tiles to render to the mask!
 
-TODO: Show code
+. . .
+
+Always render "culled" tiles in post-process mask. Solved other problems as well!
+
+---
+
+### VR
+
+Have to support multi-pass, single-pass and single-pass instanced...
+
+A bit easier in post-process shader, but mask needs to be instanced.
+
+---
+
+### Unity Bugs
+
+Doesn't work with Post-Process stack in BIRP...
+
 
 ## Future Work
 
-- Volumetric Effects - Particles, Fog
+- Volumetric Effects - Particles, Fog, Crepuscular Rays
 - Using the stencil buffer?
-- Transparency Windows (TODO: Get Screenshots)
+- Transparency Windows!
+
+---
+
+### {data-background-image="img/window_inside_out.jpg" data-background-size=contain}
+
+---
+
+### {data-background-image="img/window_outside_in.jpg" data-background-size=contain}
 
 
 ## The End
