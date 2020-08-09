@@ -99,16 +99,36 @@
     <div class="slides">
 
 
-<section id="rendering-underwater-in-crest-ocean-renderer" class="slide level3">
-<h3>Rendering Underwater in Crest Ocean Renderer</h3>
+<section id="title" class="slide level3" data-background-image="img/crest-reversed-optimised.gif" data-background-size="contain">
+<h3 data-background-image="img/crest-reversed-optimised.gif" data-background-size="contain">Rendering Underwater in Crest Ocean Renderer</h3>
 </section>
-<section id="what-is-crest" class="slide level3">
-<h3>What is Crest?</h3>
-<p>TODO: Add some good screenshots!</p>
+<section>
+<section id="what-is-crest" class="title-slide slide level2">
+<h2>What is Crest?</h2>
 <aside class="notes">
 <p>Crest is an Ocean Rendering system written for the Unity game engine. There is an open-source implementation available for Unity’s built-in render pipeline - in addition to URP and HDRP version of the asset available on Unity’s asset store.</p>
 </aside>
 </section>
+<section id="section" class="slide level3" data-background-image="img/out_of_reach_treasure_royale.jpg" data-background-size="contain">
+<h3 data-background-image="img/out_of_reach_treasure_royale.jpg" data-background-size="contain"></h3>
+<p><a href="http://spaceboatstudios.com/">Out of Reach: Treasure Royale</a></p>
+</section>
+<section id="section-1" class="slide level3" data-background-image="img/of_ships_and_scoundrels.png" data-background-size="contain">
+<h3 data-background-image="img/of_ships_and_scoundrels.png" data-background-size="contain"></h3>
+<p><a href="http://ofshipsandscoundrels.com/">Of Ships &amp; Scoundrels</a></p>
+</section>
+<section id="section-2" class="slide level3" data-background-image="img/critter-cove.webp" data-background-size="contain">
+<h3 data-background-image="img/critter-cove.webp" data-background-size="contain"></h3>
+<p><a href="https://www.play-crittercove.com">Critter Cove</a></p>
+</section>
+<section id="section-3" class="slide level3" data-background-image="img/windbound.png" data-background-size="contain">
+<h3 data-background-image="img/windbound.png" data-background-size="contain"></h3>
+<p><a href="https://windboundgame.com/">Windbound</a></p>
+</section>
+<section id="section-4" class="slide level3" data-background-image="img/morild_bridge_simulator.jpg" data-background-size="contain">
+<h3 data-background-image="img/morild_bridge_simulator.jpg" data-background-size="contain"></h3>
+<p><a href="https://www.morildinteraktiv.no/morild-navigator">Norild Navigator</a></p>
+</section></section>
 <section>
 <section id="the-problems" class="title-slide slide level2">
 <h2>The Problems</h2>
@@ -122,7 +142,17 @@
 <h3>Why do you need “Underwater Rendering”?</h3>
 <p>Simple Problem: Being Underwater “looks” different to being above water.</p>
 <aside class="notes">
-<p>TODO: Show real-life image of how underwater looks different to being above water - and the complex features you have.</p>
+<p>Go to screenshot…</p>
+</aside>
+</section>
+<section id="section-5" class="slide level3" data-background-image="img/real_life_meniscus.jpg" data-background-size="contain">
+<h3 data-background-image="img/real_life_meniscus.jpg" data-background-size="contain"></h3>
+<p><a href="https://www.pexels.com/photo/ocean-and-island-with-houses-during-day-2499791/">Photo by Stijn Dijkstra from Pexels</a></p>
+<aside class="notes">
+<p>Aside from the differences in how the water surface appears depending on which direction you are looking at it from.</p>
+<p>(Fresnel effect vs. Total Internal reflection and Schnell’s Window)</p>
+<p>You also have a whole bunch of effects which need to be applied - more fog, God Rays, floating particles and caustics.</p>
+<p>Focus of isn’t going to be on how to render all the visual features you get underwater - but instead on something more subtle and harder - how do you <em>partially</em> apply these effects when the camera is only <em>partially</em> submerged.</p>
 </aside>
 </section></section>
 <section>
@@ -151,12 +181,13 @@
 </section></section>
 <section id="transitioning-between-above-and-below-water" class="title-slide slide level2">
 <h2>Transitioning Between “Above” and “Below” Water</h2>
-<p>Most common solution: cut between views.</p>
+<p>Most common solution: cut between views - very few games <em>actually</em> show a meniscus</p>
 <div class="fragment">
-<p>Crest users expect this to “just work”.</p>
+<p>Crest users expect underwater to “just work”.</p>
 <aside class="notes">
 <p>Not all Crest users have the resources available to implement the camera logic necessary to cut between “above” and “below” water views. It’s an art to be able to pull that off in an AAA game.</p>
 <p>TODO: Game examples: Shadow of the collus, call of duty, uncharted. Counter: Nautica?</p>
+<p>Games which do have meniscus: Ubisoft Games (Far Cry 3), Bethesda Games (Skyrim)</p>
 </aside>
 </div>
 </section>
@@ -168,14 +199,15 @@
 </section>
 <section id="what-is-a-skirt" class="slide level3">
 <h3>What is a Skirt?</h3>
-<ul>
-<li>Current solution in <code>master</code> branch of Crest - used in URP release as well.</li>
-</ul>
+<p>Current solution in <code>master</code> branch of Crest - used in URP release as well.</p>
 </section>
-<section id="the-idea" class="slide level3">
-<h3>The Idea</h3>
+<section id="the-idea" class="slide level3" data-background-image="img/uncharted_3_skirt.jpg" data-background-size="contain">
+<h3 data-background-image="img/uncharted_3_skirt.jpg" data-background-size="contain">The Idea</h3>
+<p><a href="https://www.gdcvault.com/play/1015309/Water-Technology-of">Water Technology of Uncharted, Ochoa &amp; Holder, 2012</a></p>
 <aside class="notes">
-<p>TODO: reference Uncharted 3 paper, implemented by huw etc.</p>
+<p>Render polygonal “skirt” with an underwater fog shader.</p>
+<p>Take skirt used on the cracked window of a giant sinking ship…</p>
+<p>Apply it to the player camera!</p>
 </aside>
 </section>
 <section id="the-implementation" class="slide level3">
@@ -247,8 +279,8 @@
 <section id="the-mask" class="slide level3">
 <h3>The Mask</h3>
 <p>Re-render water to mask-buffer, sample in PP shader.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode glsl"><code class="sourceCode glsl"><span id="cb1-1"><a href="#cb1-1"></a></span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="dt">bool</span> isUnderwater = mask == UNDERWATER_MASK_WATER_SURFACE_BELOW || (isBelowHorizon &amp;&amp; mask != UNDERWATER_MASK_WATER_SURFACE_ABOVE);</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode glsl"><code class="sourceCode glsl"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a><span class="dt">bool</span> isUnderwater = mask == UNDERWATER_MASK_WATER_SURFACE_BELOW || (isBelowHorizon &amp;&amp; mask != UNDERWATER_MASK_WATER_SURFACE_ABOVE);</span></code></pre></div>
 <p>Mask can also be used to avoid rendering caustics on water surface.</p>
 <div class="fragment">
 <p>If custom engine… could use stencil buffer.</p>
