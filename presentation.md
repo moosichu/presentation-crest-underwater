@@ -175,6 +175,26 @@ TODO: writeup
 
 ---
 
+### {data-background-image="img/skirt_fog.jpg" data-background-size=contain}
+
+---
+
+### {data-background-image="img/skirt_wireframe.jpg" data-background-size=contain}
+
+---
+
+### {data-background-image="img/skirt_ocean_gap.jpg" data-background-size=contain}
+
+---
+
+### {data-background-image="img/skirt_final_result.jpg" data-background-size=contain}
+
+---
+
+### {data-background-image="img/skirt_wireframe_with_ocean.jpg" data-background-size=contain}
+
+---
+
 ### The Problems
 
 - Not Perfect!
@@ -183,6 +203,7 @@ TODO: writeup
 - Code can be hard to follow!
 - Ocean surface shader re-applies fog!
 - Hard to manage across BIRP, URP & HDRP
+- Shader params have to match *perfectly*
 
 
 ::: notes
@@ -190,6 +211,16 @@ TODO: writeup
 TODO
 
 :::
+
+---
+
+### {data-background-image="img/skirt_angle_gap.jpg" data-background-size=contain}
+
+---
+
+### {data-background-image="img/skirt_angle_gap_wireframe.jpg" data-background-size=contain}
+
+
 
 ## Solution 2: Post Process Effect
 
