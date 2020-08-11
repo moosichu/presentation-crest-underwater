@@ -80,7 +80,7 @@
     code span.vs { color: #4070a0; } /* VerbatimString */
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="reveal.js/css/theme/black.css" id="theme">
+  <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
   <link rel="stylesheet" href="css/style.css"/>
   <!-- Printing and PDF exports -->
   <script>
@@ -99,8 +99,8 @@
     <div class="slides">
 
 
-<section id="title" class="slide level3" data-background-image="img/crest-reversed-optimised.gif" data-background-size="contain">
-<h3 data-background-image="img/crest-reversed-optimised.gif" data-background-size="contain">Rendering Underwater in Crest Ocean Renderer</h3>
+<section id="title" class="slide level3" data-background-image="img/crest-reversed-optimised.gif" data-background-size="contain" style="color:white; text-shadow: 0px 0px 4px black;">
+<h3 data-background-image="img/crest-reversed-optimised.gif" data-background-size="contain" style="color:white; text-shadow: 0px 0px 4px black;">Rendering Underwater in Crest Ocean Renderer</h3>
 </section>
 <section>
 <section id="what-is-crest" class="title-slide slide level2">
@@ -109,8 +109,8 @@
 <p>Crest is an Ocean Rendering system written for the Unity game engine. There is an open-source implementation available for Unity’s built-in render pipeline - in addition to URP and HDRP version of the asset available on Unity’s asset store.</p>
 </aside>
 </section>
-<section id="section" class="slide level3" data-background-image="img/out_of_reach_treasure_royale.jpg" data-background-size="contain">
-<h3 data-background-image="img/out_of_reach_treasure_royale.jpg" data-background-size="contain"></h3>
+<section id="section" class="slide level3" data-background-image="img/out_of_reach_treasure_royale.jpg" data-background-size="contain" style="color:white;">
+<h3 data-background-image="img/out_of_reach_treasure_royale.jpg" data-background-size="contain" style="color:white;"></h3>
 <p><a href="http://spaceboatstudios.com/">Out of Reach: Treasure Royale</a></p>
 </section>
 <section id="section-1" class="slide level3" data-background-image="img/of_ships_and_scoundrels.png" data-background-size="contain">
@@ -186,7 +186,7 @@
 <p>Crest users expect underwater to “just work”.</p>
 <aside class="notes">
 <p>Not all Crest users have the resources available to implement the camera logic necessary to cut between “above” and “below” water views. It’s an art to be able to pull that off in an AAA game.</p>
-<p>TODO: Game examples: Shadow of the collus, call of duty, uncharted. Counter: Nautica?</p>
+<p>Game examples: Shadow of the collus, call of duty, uncharted. Counter: Nautica?</p>
 <p>Games which do have meniscus: Ubisoft Games (Far Cry 3), Bethesda Games (Skyrim)</p>
 </aside>
 </div>
@@ -213,7 +213,7 @@
 <section id="the-implementation" class="slide level3">
 <h3>The Implementation</h3>
 <aside class="notes">
-<p>TODO: writeup</p>
+<p>Render a skirt - ocean has to render fog again in back faces and match skirt exactly.</p>
 </aside>
 </section>
 <section id="section-6" class="slide level3" data-background-image="img/skirt_fog.jpg" data-background-size="contain">
@@ -242,9 +242,6 @@
 <li>Hard to manage across BIRP, URP &amp; HDRP</li>
 <li>Shader params have to match <em>perfectly</em></li>
 </ul>
-<aside class="notes">
-<p>TODO</p>
-</aside>
 </section>
 <section id="section-11" class="slide level3" data-background-image="img/skirt_angle_gap.jpg" data-background-size="contain">
 <h3 data-background-image="img/skirt_angle_gap.jpg" data-background-size="contain"></h3>
@@ -304,8 +301,8 @@
 <section id="the-mask" class="slide level3">
 <h3>The Mask</h3>
 <p>Re-render water to mask-buffer, sample in PP shader.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode glsl"><code class="sourceCode glsl"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a><span class="dt">bool</span> isUnderwater = mask == UNDERWATER_MASK_WATER_SURFACE_BELOW || (isBelowHorizon &amp;&amp; mask != UNDERWATER_MASK_WATER_SURFACE_ABOVE);</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode glsl"><code class="sourceCode glsl"><span id="cb1-1"><a href="#cb1-1"></a></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="dt">bool</span> isUnderwater = mask == UNDERWATER_MASK_WATER_SURFACE_BELOW || (isBelowHorizon &amp;&amp; mask != UNDERWATER_MASK_WATER_SURFACE_ABOVE);</span></code></pre></div>
 <p>Mask can also be used to avoid rendering caustics on water surface.</p>
 <div class="fragment">
 <p>If custom engine… could use stencil buffer.</p>
@@ -322,9 +319,6 @@
 </section>
 <section id="section-17" class="slide level3" data-background-image="img/mark_final_result.jpg" data-background-size="contain">
 <h3 data-background-image="img/mark_final_result.jpg" data-background-size="contain"></h3>
-</section>
-<section class="slide level3">
-
 </section></section>
 <section>
 <section id="post-process---the-correct-solution" class="title-slide slide level2">
@@ -362,37 +356,63 @@
 </section>
 <section id="implementation-1---vertex-shader" class="slide level3">
 <h3>Implementation 1 - Vertex Shader</h3>
-<div class="sourceCode" id="cb2"><pre class="sourceCode glsl"><code class="sourceCode glsl"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>float2 pixelCS = input.<span class="fu">uv</span> * <span class="dv">2</span> - <span class="fu">float2</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>);</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>float4 pixelWS =</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>  <span class="fu">mul</span>(_InvViewProjection, <span class="fu">float4</span>(pixelCS, <span class="fl">1.0</span>, <span class="fl">1.0</span>));</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a>output.<span class="fu">viewWS_farPlanePixelHeight</span> =</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a>  (pixelWS.<span class="fu">xyzy</span>/pixelWS.<span class="fu">w</span>);</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a>output.<span class="fu">viewWS_farPlanePixelHeight</span>.<span class="fu">xyz</span> =</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a>  _WorldSpaceCameraPos -</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true"></a>  output.<span class="fu">viewWS_farPlanePixelHeight</span>.<span class="fu">xyz</span>;</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode glsl"><code class="sourceCode glsl"><span id="cb2-1"><a href="#cb2-1"></a>float2 pixelCS = input.<span class="fu">uv</span> * <span class="dv">2</span> - <span class="fu">float2</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>);</span>
+<span id="cb2-2"><a href="#cb2-2"></a>float4 pixelWS =</span>
+<span id="cb2-3"><a href="#cb2-3"></a>  <span class="fu">mul</span>(_InvViewProjection, <span class="fu">float4</span>(pixelCS, <span class="fl">1.0</span>, <span class="fl">1.0</span>));</span>
+<span id="cb2-4"><a href="#cb2-4"></a>output.<span class="fu">viewWS_farPlanePixelHeight</span> =</span>
+<span id="cb2-5"><a href="#cb2-5"></a>  (pixelWS.<span class="fu">xyzy</span>/pixelWS.<span class="fu">w</span>);</span>
+<span id="cb2-6"><a href="#cb2-6"></a>output.<span class="fu">viewWS_farPlanePixelHeight</span>.<span class="fu">xyz</span> =</span>
+<span id="cb2-7"><a href="#cb2-7"></a>  _WorldSpaceCameraPos -</span>
+<span id="cb2-8"><a href="#cb2-8"></a>  output.<span class="fu">viewWS_farPlanePixelHeight</span>.<span class="fu">xyz</span>;</span></code></pre></div>
 <p>Check <code>pixelHeight</code> is less than ocean height in pixel shader…</p>
 </section>
-<section id="implementation-2---cpu-ocean-height" class="slide level3">
-<h3>Implementation 2 - CPU Ocean Height?</h3>
-<p>TODO: Show Code</p>
-<p>https://github.com/crest-ocean/crest/pull/299/commits/48872a990e48feb7c2e944f435b10a6bd3642343</p>
+<section id="implementation-2---calculate-ocean-height-in-clip-space" class="slide level3">
+<h3>Implementation 2 - Calculate Ocean Height in Clip Space</h3>
+<p><a href="https://github.com/crest-ocean/crest/pull/299/commits/48872a990e48feb7c2e944f435b10a6bd3642343">48872a990e48feb7c2e944f435b10a6bd3642343</a></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode glsl"><code class="sourceCode glsl"><span id="cb3-1"><a href="#cb3-1"></a>float3 oceanPosWS</span>
+<span id="cb3-2"><a href="#cb3-2"></a>  = <span class="fu">float3</span>(pixelWS.<span class="fu">x</span>, _OceanHeight, pixelWS.<span class="fu">z</span>);</span>
+<span id="cb3-3"><a href="#cb3-3"></a>float4 oceanPosCS</span>
+<span id="cb3-4"><a href="#cb3-4"></a>  = <span class="fu">mul</span>(_ViewProjection, <span class="fu">float4</span>(oceanPosWS, <span class="fl">1.0</span>));</span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="dt">float</span> oceanHeightCS = (oceanPosCS.<span class="fu">y</span> / oceanPosCS.<span class="fu">w</span>);</span>
+<span id="cb3-6"><a href="#cb3-6"></a>output.<span class="fu">viewWS_oceanDistance</span>.<span class="fu">w</span></span>
+<span id="cb3-7"><a href="#cb3-7"></a>  = pixelCS.<span class="fu">y</span> - oceanHeightCS;</span></code></pre></div>
+<p>Pixel shader checks <code>oceanDistance &lt; 0</code>.</p>
 </section>
 <section id="implementation-3---move-calculation-to-pixel-shader" class="slide level3">
 <h3>Implementation 3 - Move Calculation to Pixel Shader</h3>
-<p>TODO: Show Code</p>
-<p>https://github.com/crest-ocean/crest/pull/299/commits/cb4b9ce6948b19f37201069dd2416037253eb720</p>
-<p>Stayed here for a while</p>
+<p><a href="https://github.com/crest-ocean/crest/pull/299/commits/cb4b9ce6948b19f37201069dd2416037253eb720">cb4b9ce6948b19f37201069dd2416037253eb720</a></p>
+<p>Exactly the same as before… just done in pixel shader.</p>
+<p>August, 2019</p>
+<aside class="notes">
+<p>This solution lasted <em>a while</em> and even shipped in Crest HDRP.</p>
+<p>Everything seemed find for the first couple weeks, then the bugs started coming in.</p>
+</aside>
 </section>
-<section id="implementation-4---do-everything-on-cpu" class="slide level3">
-<h3>Implementation 4 - Do <em>everything</em> on CPU</h3>
+<section id="implementation-4---calculate-horizon-line-on-cpu" class="slide level3">
+<h3>Implementation 4 - Calculate Horizon Line on CPU</h3>
+<p>~80 LOC, calculate normal and position of horizon line.</p>
+<p>Implemented by Huw.</p>
+<p>April, 2020</p>
 </section>
 <section id="implementation-5---horizon-line-fudge" class="slide level3">
-<h3>Implementation 5 - Horizon-Line Fudge</h3>
+<h3>Implementation 5 - Horizon Line Fudge</h3>
 <p>Dirty Hack!</p>
 <p>Nudge horizon line up if below water, down if above water.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode cs"><code class="sourceCode cs"><span id="cb4-1"><a href="#cb4-1"></a>horizonSafetyMarginMultiplier /=</span>
+<span id="cb4-2"><a href="#cb4-2"></a>  Mathf.<span class="fu">Lerp</span>(1f, camera.<span class="fu">aspect</span>, angleFromWorldNormal);</span>
+<span id="cb4-3"><a href="#cb4-3"></a>resultPos +=</span>
+<span id="cb4-4"><a href="#cb4-4"></a>  resultNormal.<span class="fu">normalized</span> * horizonSafetyMarginMultiplier;</span></code></pre></div>
 <div class="fragment">
 <p>Assumption - camera at water-level, mask more likely to cover horizon.</p>
+<p>Polished by Dale Eidd</p>
+<aside class="notes">
+<p>I did initial implementation, Dale polished it further and eliminated some bugs.</p>
+</aside>
 </div>
+</section>
+<section id="journey-over" class="slide level3">
+<h3>Journey Over?</h3>
+<p>Hopefully this one is!</p>
 </section></section>
 <section>
 <section id="other-concerns" class="title-slide slide level2">
@@ -404,6 +424,9 @@
 <p>Have to be careful about constructing list of ocean tiles to render to the mask!</p>
 <div class="fragment">
 <p>Always render “culled” tiles in post-process mask. Solved other problems as well!</p>
+<aside class="notes">
+<p>We still render a global “ocean” for local water bodies such as rivers and lakes, but we just cull everything that isn’t explicitly rendered. However - those tiles still exist and can be rendered to the mask as a continuous surface.</p>
+</aside>
 </div>
 </section>
 <section id="vr" class="slide level3">
@@ -426,6 +449,9 @@
 </section>
 <section id="section-19" class="slide level3" data-background-image="img/window_inside_out.jpg" data-background-size="contain">
 <h3 data-background-image="img/window_inside_out.jpg" data-background-size="contain"></h3>
+<aside class="notes">
+<p>Have to render fog behind transparent material - so part of transparent material shader.</p>
+</aside>
 </section>
 <section id="section-20" class="slide level3" data-background-image="img/window_outside_in.jpg" data-background-size="contain">
 <h3 data-background-image="img/window_outside_in.jpg" data-background-size="contain"></h3>
@@ -441,7 +467,7 @@
 <h3>Special Thanks</h3>
 <ul>
 <li>Huw Bowles</li>
-<li>Dale</li>
+<li>Dale Eidd</li>
 </ul>
 </section>
 <section id="social-media" class="slide level3">
@@ -449,10 +475,11 @@
 <p>Subscribe to our <a href="https://www.youtube.com/channel/UCahevy2N_tj_ZOdsByl9L-A">YouTube Channel</a>!</p>
 <p>Find Crest on <a href="https://github.com/crest-ocean/crest">GitHub</a> and the Unity Asset Store.</p>
 </section>
-<section id="further-watching" class="slide level3">
-<h3>Further Watching</h3>
+<section id="further-materials" class="slide level3">
+<h3>Further Materials</h3>
 <ul>
-<li>TODO: Add Crest Siggraph Talks!</li>
+<li><a href="http://advances.realtimerendering.com/s2017/">Crest: Novel Ocean Rendering Techniques in an Open Source Framework (2017)</a></li>
+<li><a href="http://advances.realtimerendering.com/s2019/index.htm">Multi-resolution Ocean Rendering in Crest Ocean System (2019)</a></li>
 </ul>
 </section>
 <section id="references" class="slide level3">

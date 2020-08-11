@@ -15,7 +15,7 @@ nocite: |
 
 ---
 
-### Rendering Underwater in Crest Ocean Renderer {#title data-background-image="img/crest-reversed-optimised.gif" data-background-size=contain}
+### Rendering Underwater in Crest Ocean Renderer {#title data-background-image="img/crest-reversed-optimised.gif" data-background-size=contain style="color:white; text-shadow: 0px 0px 4px black;"}
 
 ## What is Crest?
 
@@ -27,7 +27,7 @@ Crest is an Ocean Rendering system written for the Unity game engine. There is a
 
 ---
 
-### {data-background-image="img/out_of_reach_treasure_royale.jpg" data-background-size=contain}
+### {data-background-image="img/out_of_reach_treasure_royale.jpg" data-background-size=contain style="color:white;"}
 
 [Out of Reach: Treasure Royale](http://spaceboatstudios.com/)
 
@@ -131,7 +131,7 @@ Crest users expect underwater to "just work".
 
 Not all Crest users have the resources available to implement the camera logic necessary to cut between "above" and "below" water views. It's an art to be able to pull that off in an AAA game.
 
-TODO: Game examples: Shadow of the collus, call of duty, uncharted. Counter: Nautica?
+Game examples: Shadow of the collus, call of duty, uncharted. Counter: Nautica?
 
 Games which do have meniscus: Ubisoft Games (Far Cry 3), Bethesda Games (Skyrim)
 
@@ -169,7 +169,7 @@ Apply it to the player camera!
 
 ::: notes
 
-TODO: writeup
+Render a skirt - ocean has to render fog again in back faces and match skirt exactly.
 
 :::
 
@@ -204,13 +204,6 @@ TODO: writeup
 - Ocean surface shader re-applies fog!
 - Hard to manage across BIRP, URP & HDRP
 - Shader params have to match *perfectly*
-
-
-::: notes
-
-TODO
-
-:::
 
 ---
 
@@ -381,37 +374,81 @@ Check `pixelHeight` is less than ocean height in pixel shader...
 
 ---
 
-### Implementation 2 - CPU Ocean Height?
+### Implementation 2 - Calculate Ocean Height in Clip Space
 
-TODO: Show Code
+[48872a990e48feb7c2e944f435b10a6bd3642343](https://github.com/crest-ocean/crest/pull/299/commits/48872a990e48feb7c2e944f435b10a6bd3642343)
 
-https://github.com/crest-ocean/crest/pull/299/commits/48872a990e48feb7c2e944f435b10a6bd3642343
+```glsl
+float3 oceanPosWS
+  = float3(pixelWS.x, _OceanHeight, pixelWS.z);
+float4 oceanPosCS
+  = mul(_ViewProjection, float4(oceanPosWS, 1.0));
+float oceanHeightCS = (oceanPosCS.y / oceanPosCS.w);
+output.viewWS_oceanDistance.w
+  = pixelCS.y - oceanHeightCS;
+```
+
+Pixel shader checks `oceanDistance < 0`.
 
 ---
 
 ### Implementation 3 - Move Calculation to Pixel Shader
 
-TODO: Show Code
+[cb4b9ce6948b19f37201069dd2416037253eb720](https://github.com/crest-ocean/crest/pull/299/commits/cb4b9ce6948b19f37201069dd2416037253eb720)
 
-https://github.com/crest-ocean/crest/pull/299/commits/cb4b9ce6948b19f37201069dd2416037253eb720
+Exactly the same as before... just done in pixel shader.
 
-Stayed here for a while
+August, 2019
+
+::: notes
+
+This solution lasted *a while* and even shipped in Crest HDRP.
+
+Everything seemed find for the first couple weeks, then the bugs started coming
+in.
+
+:::
 
 ---
 
-### Implementation 4 - Do *everything* on CPU
+### Implementation 4 - Calculate Horizon Line on CPU
+
+~80 LOC, calculate normal and position of horizon line.
+
+Implemented by Huw.
+
+April, 2020
 
 ---
 
-### Implementation 5 - Horizon-Line Fudge
+### Implementation 5 - Horizon Line Fudge
 
 Dirty Hack!
 
 Nudge horizon line up if below water, down if above water.
 
+```CS
+horizonSafetyMarginMultiplier /=
+  Mathf.Lerp(1f, camera.aspect, angleFromWorldNormal);
+resultPos +=
+  resultNormal.normalized * horizonSafetyMarginMultiplier;
+```
+
 . . .
 
 Assumption - camera at water-level, mask more likely to cover horizon.
+
+Polished by Dale Eidd
+
+::: notes
+
+I did initial implementation, Dale polished it further and eliminated some bugs.
+
+:::
+
+### Journey Over?
+
+Hopefully this one is!
 
 ## Other Concerns!
 
@@ -424,6 +461,14 @@ Have to be careful about constructing list of ocean tiles to render to the mask!
 . . .
 
 Always render "culled" tiles in post-process mask. Solved other problems as well!
+
+::: notes
+
+We still render a global "ocean" for local water bodies such as rivers and lakes,
+but we just cull everything that isn't explicitly rendered. However - those tiles
+still exist and can be rendered to the mask as a continuous surface.
+
+:::
 
 ---
 
@@ -450,6 +495,12 @@ Doesn't work with Post-Process stack in BIRP...
 
 ### {data-background-image="img/window_inside_out.jpg" data-background-size=contain}
 
+::: notes
+
+Have to render fog behind transparent material - so part of transparent material shader.
+
+:::
+
 ---
 
 ### {data-background-image="img/window_outside_in.jpg" data-background-size=contain}
@@ -468,7 +519,7 @@ I hope you found this interesting!
 ### Special Thanks
 
 - Huw Bowles
-- Dale
+- Dale Eidd
 
 ---
 
@@ -480,9 +531,10 @@ Find Crest on [GitHub](https://github.com/crest-ocean/crest) and the Unity Asset
 
 ---
 
-### Further Watching
+### Further Materials
 
-- TODO: Add Crest Siggraph Talks!
+- [Crest: Novel Ocean Rendering Techniques in an Open Source Framework (2017)](http://advances.realtimerendering.com/s2017/)
+- [Multi-resolution Ocean Rendering in Crest Ocean System (2019)](http://advances.realtimerendering.com/s2019/index.htm)
 
 ---
 
