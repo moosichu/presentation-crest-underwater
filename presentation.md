@@ -56,11 +56,18 @@ Crest is an Ocean Rendering system written for the Unity game engine. There is a
 [Norild Navigator](https://www.morildinteraktiv.no/morild-navigator)
 
 
-## The Problems
+## Underwater Rendering - The Problem
 
 - What effects should be applied? And how?
 - When to apply effects?
-- How to handle transition between effects!
+- How to handle transition between contexts!
+
+
+::: notes
+
+What is special about rendering underwater?
+
+:::
 
 ---
 
@@ -88,7 +95,7 @@ Aside from the differences in how the water surface appears depending on which d
 You also have a whole bunch of effects which need to be applied - more fog, God Rays, floating particles and caustics.
 
 Focus of isn't going to be on how to render all the visual features you get underwater - but instead on something more
-subtle and harder - how do you *partially* apply these effects when the camera is only *partially* submerged.
+subtle and harder - how do you *partially* apply these effects when the camera is only *partially* submerged - like in the picture!
 
 :::
 
@@ -104,8 +111,16 @@ Branch shader when rendering back-faces
 
 - Branching in shader :(
 - Handles transition!
-- Single draw-calls
+- Single draw-call per-tile
 - Simple to implement!
+
+::: notes
+
+Branching isn't so bad - as a lot of the culculations such as light accumlation from subsurface scattering are the same for front/back-faces - epecially for TIR parts of the ocean.
+
+Branching cost is low when all every "thread" takes same route - which is the case when fully submerged or above water. Cost is only on the boundary.
+
+:::
 
 ---
 
@@ -137,17 +152,17 @@ Games which do have meniscus: Ubisoft Games (Far Cry 3), Bethesda Games (Skyrim)
 
 :::
 
-## Solution 1: The Skirt
+## Solution 1: The Curtain
 
 ---
 
-### What is a Skirt?
+### What is a Curtain?
 
 Current solution in `master` branch of Crest - used in URP release as well.
 
 ---
 
-### The Idea {data-background-image="img/uncharted_3_skirt.jpg" data-background-size=contain}
+### The Idea {data-background-image="img/uncharted_3_skirt.jpg" data-background-size=contain style="color:white;"}
 
 
 [Water Technology of Uncharted, Ochoa & Holder, 2012](https://www.gdcvault.com/play/1015309/Water-Technology-of)
@@ -155,9 +170,9 @@ Current solution in `master` branch of Crest - used in URP release as well.
 
 ::: notes
 
-Render polygonal "skirt" with an underwater fog shader.
+Render polygonal "curtain" with an underwater fog shader.
 
-Take skirt used on the cracked window of a giant sinking ship...
+Take curtain used on the cracked window of a giant sinking ship...
 
 Apply it to the player camera!
 
@@ -169,7 +184,7 @@ Apply it to the player camera!
 
 ::: notes
 
-Render a skirt - ocean has to render fog again in back faces and match skirt exactly.
+Render a curtain - ocean has to render fog again in back faces and match curtain exactly.
 
 :::
 
@@ -314,6 +329,19 @@ If custom engine... could use stencil buffer.
 ---
 
 ### {data-background-image="img/mark_final_result.jpg" data-background-size=contain}
+
+
+## Curtain vs Post Process - Fight!
+
+::: notes
+
+the disadvantage i was hitting with the curtain (i use different terminology than 'skirt' btw but not sure if it matters) was that it was hard to set up the geometry so it worked in every case. first it was hard to get an exact match to the water line, but this was helped by moving the top of the curtain towards the horizon line (and then rendering surface over it). the other problems were related to covering near plane properly - covering FOV in different VR modes, and not clipping with the plane (part of the curtain computation happens in world space, so stuff got nasty at distance from the origin due to precision issues).
+
+the advantage of the curtain was it didnt need the mask pass, and it was easy to render transparents before / after (because it wasnt a PP). would be good to capture this as Pros, or Cons of the PP effect. shader params matching perfectly is also a Con of the PP, and probably managing across pipelines is/will be also a con - although im not sure about htat, maybe not. in general i think the curtain has a few favourable things and might work best for some cases - but some significant issues for us trying to work for every case
+
+Curtain also doesn't need continuous ocean body out to the horizon - which is bad for local water bodies - but might actually be favourable for Crest's implementation anyway. :)
+
+:::
 
 
 

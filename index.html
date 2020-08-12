@@ -130,13 +130,16 @@
 <p><a href="https://www.morildinteraktiv.no/morild-navigator">Norild Navigator</a></p>
 </section></section>
 <section>
-<section id="the-problems" class="title-slide slide level2">
-<h2>The Problems</h2>
+<section id="underwater-rendering---the-problem" class="title-slide slide level2">
+<h2>Underwater Rendering - The Problem</h2>
 <ul>
 <li>What effects should be applied? And how?</li>
 <li>When to apply effects?</li>
-<li>How to handle transition between effects!</li>
+<li>How to handle transition between contexts!</li>
 </ul>
+<aside class="notes">
+<p>What is special about rendering underwater?</p>
+</aside>
 </section>
 <section id="why-do-you-need-underwater-rendering" class="slide level3">
 <h3>Why do you need “Underwater Rendering”?</h3>
@@ -152,7 +155,7 @@
 <p>Aside from the differences in how the water surface appears depending on which direction you are looking at it from.</p>
 <p>(Fresnel effect vs. Total Internal reflection and Schnell’s Window)</p>
 <p>You also have a whole bunch of effects which need to be applied - more fog, God Rays, floating particles and caustics.</p>
-<p>Focus of isn’t going to be on how to render all the visual features you get underwater - but instead on something more subtle and harder - how do you <em>partially</em> apply these effects when the camera is only <em>partially</em> submerged.</p>
+<p>Focus of isn’t going to be on how to render all the visual features you get underwater - but instead on something more subtle and harder - how do you <em>partially</em> apply these effects when the camera is only <em>partially</em> submerged - like in the picture!</p>
 </aside>
 </section></section>
 <section>
@@ -167,9 +170,13 @@
 <ul>
 <li>Branching in shader :(</li>
 <li>Handles transition!</li>
-<li>Single draw-calls</li>
+<li>Single draw-call per-tile</li>
 <li>Simple to implement!</li>
 </ul>
+<aside class="notes">
+<p>Branching isn’t so bad - as a lot of the culculations such as light accumlation from subsurface scattering are the same for front/back-faces - epecially for TIR parts of the ocean.</p>
+<p>Branching cost is low when all every “thread” takes same route - which is the case when fully submerged or above water. Cost is only on the boundary.</p>
+</aside>
 </div>
 </section>
 <section id="fog" class="slide level3">
@@ -193,27 +200,27 @@
 </section>
 
 <section>
-<section id="solution-1-the-skirt" class="title-slide slide level2">
-<h2>Solution 1: The Skirt</h2>
+<section id="solution-1-the-curtain" class="title-slide slide level2">
+<h2>Solution 1: The Curtain</h2>
 
 </section>
-<section id="what-is-a-skirt" class="slide level3">
-<h3>What is a Skirt?</h3>
+<section id="what-is-a-curtain" class="slide level3">
+<h3>What is a Curtain?</h3>
 <p>Current solution in <code>master</code> branch of Crest - used in URP release as well.</p>
 </section>
-<section id="the-idea" class="slide level3" data-background-image="img/uncharted_3_skirt.jpg" data-background-size="contain">
-<h3 data-background-image="img/uncharted_3_skirt.jpg" data-background-size="contain">The Idea</h3>
+<section id="the-idea" class="slide level3" data-background-image="img/uncharted_3_skirt.jpg" data-background-size="contain" style="color:white;">
+<h3 data-background-image="img/uncharted_3_skirt.jpg" data-background-size="contain" style="color:white;">The Idea</h3>
 <p><a href="https://www.gdcvault.com/play/1015309/Water-Technology-of">Water Technology of Uncharted, Ochoa &amp; Holder, 2012</a></p>
 <aside class="notes">
-<p>Render polygonal “skirt” with an underwater fog shader.</p>
-<p>Take skirt used on the cracked window of a giant sinking ship…</p>
+<p>Render polygonal “curtain” with an underwater fog shader.</p>
+<p>Take curtain used on the cracked window of a giant sinking ship…</p>
 <p>Apply it to the player camera!</p>
 </aside>
 </section>
 <section id="the-implementation" class="slide level3">
 <h3>The Implementation</h3>
 <aside class="notes">
-<p>Render a skirt - ocean has to render fog again in back faces and match skirt exactly.</p>
+<p>Render a curtain - ocean has to render fog again in back faces and match curtain exactly.</p>
 </aside>
 </section>
 <section id="section-6" class="slide level3" data-background-image="img/skirt_fog.jpg" data-background-size="contain">
@@ -231,7 +238,7 @@
 <section id="section-10" class="slide level3" data-background-image="img/skirt_wireframe_with_ocean.jpg" data-background-size="contain">
 <h3 data-background-image="img/skirt_wireframe_with_ocean.jpg" data-background-size="contain"></h3>
 </section>
-<section id="the-problems-1" class="slide level3">
+<section id="the-problems" class="slide level3">
 <h3>The Problems</h3>
 <ul>
 <li>Not Perfect!</li>
@@ -320,6 +327,15 @@
 <section id="section-17" class="slide level3" data-background-image="img/mark_final_result.jpg" data-background-size="contain">
 <h3 data-background-image="img/mark_final_result.jpg" data-background-size="contain"></h3>
 </section></section>
+<section id="curtain-vs-post-process---fight" class="title-slide slide level2">
+<h2>Curtain vs Post Process - Fight!</h2>
+<aside class="notes">
+<p>the disadvantage i was hitting with the curtain (i use different terminology than ‘skirt’ btw but not sure if it matters) was that it was hard to set up the geometry so it worked in every case. first it was hard to get an exact match to the water line, but this was helped by moving the top of the curtain towards the horizon line (and then rendering surface over it). the other problems were related to covering near plane properly - covering FOV in different VR modes, and not clipping with the plane (part of the curtain computation happens in world space, so stuff got nasty at distance from the origin due to precision issues).</p>
+<p>the advantage of the curtain was it didnt need the mask pass, and it was easy to render transparents before / after (because it wasnt a PP). would be good to capture this as Pros, or Cons of the PP effect. shader params matching perfectly is also a Con of the PP, and probably managing across pipelines is/will be also a con - although im not sure about htat, maybe not. in general i think the curtain has a few favourable things and might work best for some cases - but some significant issues for us trying to work for every case</p>
+<p>Curtain also doesn’t need continuous ocean body out to the horizon - which is bad for local water bodies - but might actually be favourable for Crest’s implementation anyway. :)</p>
+</aside>
+</section>
+
 <section>
 <section id="post-process---the-correct-solution" class="title-slide slide level2">
 <h2>Post-Process - The Correct Solution?</h2>
